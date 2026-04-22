@@ -114,7 +114,7 @@ python shell_hist_yolo\build_dataset.py `
 
 ```powershell
 python shell_hist_yolo\build_dataset.py `
-  --config shell_hist_yolo\config.example.jsonc
+  --config shell_hist_yolo\build_config.jsonc
 ```
 
 ## 主要参数
@@ -219,13 +219,13 @@ shell_hist_yolo_output/
 - 训练代码需要改为读取 `.npy` 或 `.pt`，而不是原始图片
 - 如果通道数太多，可以减小 `hist_bins` 或减少统计通道
 - `pt` 输出依赖 `torch`，`npy` 不依赖
-- `dataset.yaml` 会自动生成，但其中的 `names` 默认写成 `class_0`、`class_1` 这类占位名，训练前最好改成真实类别名
-- `dataset.yaml` 底部会额外写入注释形式的 `input_channels`，方便你同步修改 YOLO 模型的输入通道数
+- `dataset.yaml` 会自动生成，优先读取数据集里的 `classes.txt` 作为类别名；如果没找到，再回退到默认类别名
+- `dataset.yaml` 会写入 `channels` 字段，训练侧会按这个值重建模型输入通道数
 
 ## 目录文件说明
 
 - `histogram_yolo_builder.py`：核心预处理逻辑
 - `build_dataset.py`：命令行入口
-- `config.example.jsonc`：带注释的示例配置
+- `build_config.jsonc`：带注释的默认生成配置
 - `FOREGROUND_EXTRACTION_zh-CN.md`：前景提取说明
 - `USAGE_zh-CN.md`：更完整的中文使用文档

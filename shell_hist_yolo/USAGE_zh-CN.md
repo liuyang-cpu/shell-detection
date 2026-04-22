@@ -204,10 +204,10 @@ python shell_hist_yolo\build_dataset.py `
 
 ```powershell
 python shell_hist_yolo\build_dataset.py `
-  --config shell_hist_yolo\config.example.jsonc
+  --config shell_hist_yolo\build_config.jsonc
 ```
 
-`config.example.jsonc` 是带注释的示例配置，脚本会先去掉注释再按 JSON 解析。
+`build_config.jsonc` 是带注释的默认配置，脚本会先去掉注释再按 JSON 解析；现在直接运行 `build_dataset.py` 也会默认读取它。
 
 ## 10. 参数说明
 
@@ -456,5 +456,5 @@ print(x.shape)
 
 - 核心代码：`shell_hist_yolo/histogram_yolo_builder.py`
 - 命令入口：`shell_hist_yolo/build_dataset.py`
-- 示例配置：`shell_hist_yolo/config.example.jsonc`
+- 示例配置：`shell_hist_yolo/build_config.jsonc`
 - 英文说明：`shell_hist_yolo/README.md`
