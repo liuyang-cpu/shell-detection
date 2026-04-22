@@ -62,6 +62,13 @@ def load_json_config(config_path: Path) -> dict[str, object]:
     return data
 
 
+def resolve_path(value: Path | str | None, base_dir: Path) -> Path | None:
+    if value is None:
+        return None
+    path = Path(value)
+    return path if path.is_absolute() else (base_dir / path).resolve()
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description="Build YOLO-ready multi-channel tensors from grayscale X-ray images and YOLO bbox labels."
@@ -119,6 +126,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main() -> None:
     script_dir = Path(__file__).resolve().parent
+    repo_root = script_dir.parent
     default_config_path = script_dir / "build_config.jsonc"
 
     pre_parser = argparse.ArgumentParser(add_help=False)
@@ -132,6 +140,8 @@ def main() -> None:
         parser.set_defaults(**config_data)
 
     args = parser.parse_args()
+    args.datasets_root = resolve_path(args.datasets_root, repo_root)
+    args.output_root = resolve_path(args.output_root, repo_root)
     if args.datasets_root is None or args.output_root is None:
         parser.error("--datasets-root and --output-root are required, either by CLI or --config")
 
@@ -147,8 +157,8 @@ def main() -> None:
     )
     builder = HistogramYOLOBuilder(config)
     summary = builder.process_dataset_root(
-        datasets_root=Path(args.datasets_root),
-        output_root=Path(args.output_root),
+        datasets_root=args.datasets_root,
+        output_root=args.output_root,
         splits=args.splits,
         dataset_names=args.dataset_names,
     )

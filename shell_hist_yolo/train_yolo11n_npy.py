@@ -2,7 +2,12 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parent.parent
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
 
 from ultralytics import YOLO
 from ultralytics.utils import YAML
@@ -63,6 +68,13 @@ def load_json_config(config_path: Path) -> dict[str, object]:
     return data
 
 
+def resolve_path(value: Path | str | None, base_dir: Path) -> Path | None:
+    if value is None:
+        return None
+    path = Path(value)
+    return path if path.is_absolute() else (base_dir / path).resolve()
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description="Train yolo11n.pt on a shell histogram NPY dataset exported by build_dataset.py."
@@ -121,6 +133,7 @@ def validate_dataset_yaml(data_path: Path) -> dict:
 
 def main() -> None:
     script_dir = Path(__file__).resolve().parent
+    repo_root = script_dir.parent
     default_config_path = script_dir / "train_config.jsonc"
 
     pre_parser = argparse.ArgumentParser(add_help=False)
@@ -137,9 +150,9 @@ def main() -> None:
     if args.data is None:
         parser.error("--data is required, either by CLI or --config")
 
-    data_path = args.data.resolve()
-    model_path = args.model.resolve()
-    project_path = args.project.resolve()
+    data_path = resolve_path(args.data, repo_root)
+    model_path = resolve_path(args.model, repo_root)
+    project_path = resolve_path(args.project, repo_root)
 
     data = validate_dataset_yaml(data_path)
     channels = int(data["channels"])
