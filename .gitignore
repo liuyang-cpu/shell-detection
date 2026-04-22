@@ -174,3 +174,6 @@ pnnx*
 
 # calibration image
 calibration_*.npy
+
+# shell histogram dataset outputs
+shell_hist_yolo_output/
