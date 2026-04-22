@@ -1,0 +1,24 @@
+{
+  // 数据集配置文件，指向你生成出来的 dataset.yaml
+  "data": "shell_hist_yolo_output/baibei/dataset.yaml",
+
+  // 预训练模型
+  "model": "yolo11n.pt",
+
+  // 训练参数
+  "epochs": 100,
+  "imgsz": 640,
+  "batch": 8,
+  "device": "0",
+  "workers": 4,
+  "project": "runs/shell_hist_yolo",
+  "name": "yolo11n_npy",
+  "patience": 50,
+
+  // 可选开关
+  "cache": false,
+  "amp": true,
+  "pretrained": true,
+  "resume": false,
+  "exist_ok": true
+}

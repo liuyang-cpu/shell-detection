@@ -1,10 +1,66 @@
 from __future__ import annotations
 
 import argparse
+import json
 from pathlib import Path
 
 from ultralytics import YOLO
 from ultralytics.utils import YAML
+
+
+def strip_json_comments(text: str) -> str:
+    result: list[str] = []
+    in_string = False
+    escape = False
+    i = 0
+    length = len(text)
+
+    while i < length:
+        char = text[i]
+        nxt = text[i + 1] if i + 1 < length else ""
+
+        if in_string:
+            result.append(char)
+            if escape:
+                escape = False
+            elif char == "\\":
+                escape = True
+            elif char == '"':
+                in_string = False
+            i += 1
+            continue
+
+        if char == '"':
+            in_string = True
+            result.append(char)
+            i += 1
+            continue
+
+        if char == "/" and nxt == "/":
+            i += 2
+            while i < length and text[i] not in "\r\n":
+                i += 1
+            continue
+
+        if char == "/" and nxt == "*":
+            i += 2
+            while i + 1 < length and not (text[i] == "*" and text[i + 1] == "/"):
+                i += 1
+            i += 2
+            continue
+
+        result.append(char)
+        i += 1
+
+    return "".join(result)
+
+
+def load_json_config(config_path: Path) -> dict[str, object]:
+    text = config_path.read_text(encoding="utf-8")
+    data = json.loads(strip_json_comments(text))
+    if not isinstance(data, dict):
+        raise ValueError("config file must contain a JSON object")
+    return data
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -12,9 +68,15 @@ def build_parser() -> argparse.ArgumentParser:
         description="Train yolo11n.pt on a shell histogram NPY dataset exported by build_dataset.py."
     )
     parser.add_argument(
+        "--config",
+        type=Path,
+        default=None,
+        help="Optional JSON/JSONC config file. Defaults to shell_hist_yolo/train_config.jsonc when present.",
+    )
+    parser.add_argument(
         "--data",
         type=Path,
-        required=True,
+        default=None,
         help="Path to dataset.yaml produced under shell_hist_yolo_output/<dataset_name>/dataset.yaml",
     )
     parser.add_argument("--model", type=Path, default=Path("yolo11n.pt"), help="Base pretrained YOLO checkpoint")
@@ -58,8 +120,22 @@ def validate_dataset_yaml(data_path: Path) -> dict:
 
 
 def main() -> None:
+    script_dir = Path(__file__).resolve().parent
+    default_config_path = script_dir / "train_config.jsonc"
+
+    pre_parser = argparse.ArgumentParser(add_help=False)
+    pre_parser.add_argument("--config", type=Path, default=None)
+    pre_args, _ = pre_parser.parse_known_args()
+
     parser = build_parser()
+    config_path = pre_args.config or (default_config_path if default_config_path.is_file() else None)
+    if config_path is not None:
+        parser.set_defaults(**load_json_config(config_path))
+
     args = parser.parse_args()
+
+    if args.data is None:
+        parser.error("--data is required, either by CLI or --config")
 
     data_path = args.data.resolve()
     model_path = args.model.resolve()
