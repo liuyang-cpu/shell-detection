@@ -1,24 +1,41 @@
 {
   // 数据集配置文件，指向你生成出来的 dataset.yaml
+  // 可选示例: shell_hist_yolo_output/baibei/dataset.yaml
+  //           shell_hist_yolo_output/baiha/dataset.yaml
   "data": "shell_hist_yolo_output/baibei/dataset.yaml",
 
   // 预训练模型
+  // 可选示例: yolo11n.pt / yolo11s.pt / yolo11m.pt
   "model": "yolo11n.pt",
 
   // 训练参数
+  // 可选范围: 100 / 200 / 300
   "epochs": 100,
+  // 可选示例: 640 / 800 / 1024
   "imgsz": 640,
+  // 显存不足时可降到 4 或 2
   "batch": 8,
+  // 可选示例: "0" / "0,1" / "cpu"
   "device": "0",
+  // Windows 如果数据加载有问题，可尝试 0 / 2 / 4
   "workers": 4,
+  // 训练输出目录
   "project": "runs/shell_hist_yolo",
+  // 本次训练任务名称
   "name": "yolo11n_npy",
+  // 验证指标长期不提升时提前停止
+  // 可选示例: 30 / 50 / 100
   "patience": 50,
 
   // 可选开关
+  // true 会尝试缓存数据，数据量大时建议先保持 false
   "cache": false,
+  // GPU 训练通常建议 true
   "amp": true,
+  // 是否使用预训练权重
   "pretrained": true,
+  // 是否从上次中断位置继续训练
   "resume": false,
+  // 输出目录已存在时是否允许继续写入
   "exist_ok": true
 }
