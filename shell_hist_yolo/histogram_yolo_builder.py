@@ -110,7 +110,8 @@ class HistogramYOLOBuilder:
         channels = [grayscale_channel]
         channels.extend(histogram_channels)
         channels.extend(stat_channels)
-        stacked = np.stack(channels, axis=0).astype(np.float32)
+        # Ultralytics augmentation pipeline expects image-like arrays in HWC layout.
+        stacked = np.stack(channels, axis=-1).astype(np.float32)
 
         metadata = {
             "image_path": str(image_path),
@@ -301,6 +302,8 @@ class HistogramYOLOBuilder:
             if split_name in split_names:
                 yaml_lines.append(f"{split_name}: images/{split_name}")
         yaml_lines.append("")
+        yaml_lines.append(f"channels: {self.channel_count}")
+        yaml_lines.append("")
         yaml_lines.append("names:")
         if class_ids:
             for class_id in class_ids:
@@ -308,7 +311,6 @@ class HistogramYOLOBuilder:
         else:
             yaml_lines.append("  0: class_0")
         yaml_lines.append("")
-        yaml_lines.append(f"# input_channels: {self.channel_count}")
         yaml_lines.append(f"# tensor_format: {self.config.save_format}")
         yaml_lines.append("# Update class names above before training if you have semantic labels.")
         (dataset_output_dir / "dataset.yaml").write_text("\n".join(yaml_lines), encoding="utf-8")
