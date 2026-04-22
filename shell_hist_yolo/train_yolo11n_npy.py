@@ -44,6 +44,8 @@ def validate_dataset_yaml(data_path: Path) -> dict:
         raise FileNotFoundError(f"dataset yaml not found: {data_path}")
 
     data = YAML.load(data_path)
+    # Histogram builder writes the multi-channel count into dataset.yaml.
+    # Training must read the same value so the model is rebuilt with matching input channels.
     channels = int(data.get("channels", 0) or 0)
     if channels <= 0:
         raise ValueError(
@@ -77,6 +79,8 @@ def main() -> None:
     print(f"Classes      : {nc}")
     print(f"Project      : {project_path}")
 
+    # Loading from yolo11n.pt keeps pretrained weights where tensor shapes match.
+    # Ultralytics will rebuild the first conv using dataset.yaml -> channels for NPY inputs.
     model = YOLO(model_path)
     model.train(
         data=str(data_path),
