@@ -1,0 +1,39 @@
+{
+  // 数据集根目录
+  // 可选示例: datasets
+  "datasets_root": "datasets",
+
+  // 输出目录
+  // 可选示例: shell_hist_yolo_output
+  "output_root": "shell_hist_yolo_output",
+
+  // 只处理指定子数据集
+  // 可选示例: ["baibei"] / ["baiha"] / null
+  "dataset_names": ["baibei"],
+
+  // 处理哪些 split
+  // 可选示例: ["train", "val"] / ["train"] / ["val"]
+  "splits": ["train", "val"],
+
+  // 前景提取参数
+  "background_threshold": 250,
+  "foreground_mode": "smart",
+
+  // 直方图参数
+  "hist_bins": 16,
+  "hist_mode": "object",
+  "merge_mode": "mean",
+
+  // 附加统计通道
+  // 可选示例: ["mean", "iqr", "p10", "p90"]
+  //           ["mean"]
+  //           []
+  "include_stats": ["mean", "iqr", "p10", "p90"],
+
+  // 输出格式
+  // 可选示例: "npy" / "pt" / "both"
+  "save_format": "npy",
+
+  // 是否跳过空标签图片
+  "skip_empty_labels": false
+}

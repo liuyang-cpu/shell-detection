@@ -118,13 +118,17 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def main() -> None:
+    script_dir = Path(__file__).resolve().parent
+    default_config_path = script_dir / "build_config.jsonc"
+
     pre_parser = argparse.ArgumentParser(add_help=False)
     pre_parser.add_argument("--config", type=Path, default=None)
     pre_args, _ = pre_parser.parse_known_args()
 
     parser = build_parser()
-    if pre_args.config is not None:
-        config_data = load_json_config(pre_args.config)
+    config_path = pre_args.config or (default_config_path if default_config_path.is_file() else None)
+    if config_path is not None:
+        config_data = load_json_config(config_path)
         parser.set_defaults(**config_data)
 
     args = parser.parse_args()
