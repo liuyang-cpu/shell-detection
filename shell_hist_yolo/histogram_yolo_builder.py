@@ -17,6 +17,12 @@ except ImportError:  # pragma: no cover
 
 VALID_IMAGE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".bmp", ".tif", ".tiff", ".webp"}
 VALID_STATS = ("mean", "iqr", "p10", "p90", "foreground_ratio")
+DEFAULT_CLASS_NAMES = {
+    0: "broken",
+    1: "empty",
+    2: "muddy",
+    3: "normal",
+}
 
 
 @dataclass(slots=True)
@@ -86,6 +92,9 @@ class HistogramYOLOBuilder:
     @property
     def channel_count(self) -> int:
         return 1 + self.config.hist_bins + len(self.config.include_stats)
+
+    def _build_class_names(self, class_ids: list[int]) -> dict[int, str]:
+        return {class_id: DEFAULT_CLASS_NAMES.get(class_id, f"class_{class_id}") for class_id in class_ids}
 
     def process_image(self, image_path: Path, label_path: Path) -> BuildResult:
         image = self._load_grayscale_image(image_path)
@@ -289,7 +298,7 @@ class HistogramYOLOBuilder:
             "include_stats": list(self.config.include_stats),
             "splits": split_names,
             "class_ids": class_ids,
-            "names": {class_id: f"class_{class_id}" for class_id in class_ids},
+            "names": self._build_class_names(class_ids),
         }
         metadata_path = dataset_output_dir / "dataset_metadata.json"
         metadata_path.write_text(json.dumps(dataset_metadata, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -306,13 +315,12 @@ class HistogramYOLOBuilder:
         yaml_lines.append("")
         yaml_lines.append("names:")
         if class_ids:
-            for class_id in class_ids:
-                yaml_lines.append(f"  {class_id}: class_{class_id}")
+            for class_id, class_name in self._build_class_names(class_ids).items():
+                yaml_lines.append(f"  {class_id}: {class_name}")
         else:
-            yaml_lines.append("  0: class_0")
+            yaml_lines.append(f"  0: {DEFAULT_CLASS_NAMES[0]}")
         yaml_lines.append("")
         yaml_lines.append(f"# tensor_format: {self.config.save_format}")
-        yaml_lines.append("# Update class names above before training if you have semantic labels.")
         (dataset_output_dir / "dataset.yaml").write_text("\n".join(yaml_lines), encoding="utf-8")
 
     def _load_grayscale_image(self, image_path: Path) -> np.ndarray:
