@@ -93,8 +93,12 @@ class HistogramYOLOBuilder:
     def channel_count(self) -> int:
         return 1 + self.config.hist_bins + len(self.config.include_stats)
 
-    def _build_class_names(self, class_ids: list[int]) -> dict[int, str]:
-        return {class_id: DEFAULT_CLASS_NAMES.get(class_id, f"class_{class_id}") for class_id in class_ids}
+    def _build_class_names(self, class_ids: list[int], dataset_class_names: dict[int, str] | None = None) -> dict[int, str]:
+        dataset_class_names = dataset_class_names or {}
+        return {
+            class_id: dataset_class_names.get(class_id, DEFAULT_CLASS_NAMES.get(class_id, f"class_{class_id}"))
+            for class_id in class_ids
+        }
 
     def process_image(self, image_path: Path, label_path: Path) -> BuildResult:
         image = self._load_grayscale_image(image_path)
@@ -185,6 +189,7 @@ class HistogramYOLOBuilder:
                 "class_ids": [],
             }
             dataset_class_ids: set[int] = set()
+            dataset_class_names = self._load_dataset_class_names(dataset_dir, splits)
 
             for split in splits:
                 split_summary = self._process_split(
@@ -197,11 +202,13 @@ class HistogramYOLOBuilder:
                 dataset_class_ids.update(int(class_id) for class_id in split_summary["class_ids"])
 
             dataset_summary["class_ids"] = sorted(dataset_class_ids)
+            dataset_summary["names"] = self._build_class_names(sorted(dataset_class_ids), dataset_class_names)
             self._write_dataset_files(
                 dataset_name=dataset_name,
                 dataset_output_dir=dataset_output_dir,
                 split_names=[name for name, value in dataset_summary["splits"].items() if value["processed_images"] > 0],
                 class_ids=sorted(dataset_class_ids),
+                dataset_class_names=dataset_class_names,
             )
 
             summary["datasets"][dataset_name] = dataset_summary
@@ -283,6 +290,7 @@ class HistogramYOLOBuilder:
         dataset_output_dir: Path,
         split_names: list[str],
         class_ids: list[int],
+        dataset_class_names: dict[int, str] | None = None,
     ) -> None:
         dataset_output_dir.mkdir(parents=True, exist_ok=True)
         dataset_metadata = {
@@ -298,7 +306,7 @@ class HistogramYOLOBuilder:
             "include_stats": list(self.config.include_stats),
             "splits": split_names,
             "class_ids": class_ids,
-            "names": self._build_class_names(class_ids),
+            "names": self._build_class_names(class_ids, dataset_class_names),
         }
         metadata_path = dataset_output_dir / "dataset_metadata.json"
         metadata_path.write_text(json.dumps(dataset_metadata, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -315,13 +323,26 @@ class HistogramYOLOBuilder:
         yaml_lines.append("")
         yaml_lines.append("names:")
         if class_ids:
-            for class_id, class_name in self._build_class_names(class_ids).items():
+            for class_id, class_name in self._build_class_names(class_ids, dataset_class_names).items():
                 yaml_lines.append(f"  {class_id}: {class_name}")
         else:
             yaml_lines.append(f"  0: {DEFAULT_CLASS_NAMES[0]}")
         yaml_lines.append("")
         yaml_lines.append(f"# tensor_format: {self.config.save_format}")
         (dataset_output_dir / "dataset.yaml").write_text("\n".join(yaml_lines), encoding="utf-8")
+
+    def _load_dataset_class_names(self, dataset_dir: Path, splits: Iterable[str]) -> dict[int, str]:
+        candidate_paths = [dataset_dir / "labels" / "classes.txt"]
+        candidate_paths.extend(dataset_dir / "labels" / split / "classes.txt" for split in splits)
+
+        for classes_path in candidate_paths:
+            if not classes_path.is_file():
+                continue
+            names = [line.strip() for line in classes_path.read_text(encoding="utf-8").splitlines() if line.strip()]
+            if names:
+                return {class_id: class_name for class_id, class_name in enumerate(names)}
+
+        return {}
 
     def _load_grayscale_image(self, image_path: Path) -> np.ndarray:
         with Image.open(image_path) as image:
