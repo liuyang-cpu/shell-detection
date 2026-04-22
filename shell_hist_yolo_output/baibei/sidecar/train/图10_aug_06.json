@@ -1,0 +1,42 @@
+{
+  "image_path": "datasets\\baibei\\images\\train\\图10_aug_06.png",
+  "label_path": "datasets\\baibei\\labels\\train\\图10_aug_06.txt",
+  "shape": [
+    21,
+    103,
+    117
+  ],
+  "height": 103,
+  "width": 117,
+  "object_count": 1,
+  "hist_bins": 16,
+  "hist_mode": "object",
+  "merge_mode": "mean",
+  "background_threshold": 250,
+  "foreground_mode": "smart",
+  "include_stats": [
+    "mean",
+    "iqr",
+    "p10",
+    "p90"
+  ],
+  "objects": [
+    {
+      "class_id": 3,
+      "bbox_xyxy": [
+        24,
+        17,
+        79,
+        80
+      ],
+      "foreground_count": 2156,
+      "stats": {
+        "mean": 0.36737422241623924,
+        "iqr": 0.0784313725490196,
+        "p10": 0.2549019607843137,
+        "p90": 0.45098039215686275,
+        "foreground_ratio": 0.6222222222222222
+      }
+    }
+  ]
+}

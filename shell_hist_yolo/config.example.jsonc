@@ -1,0 +1,66 @@
+{
+  // 数据集根目录。可以是单个 YOLO 数据集，也可以是包含多个子数据集的根目录。
+  "datasets_root": "datasets",
+
+  // 输出目录。这里会生成训练侧友好的目录结构：
+  // dataset/images/train|val
+  // dataset/labels/train|val
+  // dataset/sidecar/train|val
+  // dataset/dataset.yaml
+  // dataset/dataset_metadata.json
+  "output_root": "shell_hist_yolo_output",
+
+  // 仅在 foreground_mode = "threshold" 时有意义。
+  // 像素值 >= 这个阈值时，认为是背景。
+  "background_threshold": 250,
+
+  // 前景提取模式：
+  // "smart"     -> 自适应阈值 + 主连通域筛选，推荐
+  // "threshold" -> 旧逻辑，直接用 gray < background_threshold
+  "foreground_mode": "smart",
+
+  // 直方图分桶数量。常见值：4 / 8 / 16 / 32
+  // 总通道数计算方式：
+  // 1 + hist_bins + len(include_stats)
+  // 以当前配置为例：1 + 16 + 4 = 21
+  "hist_bins": 16,
+
+  // 直方图映射方式：
+  // "object" -> 每个 bbox 单独计算自己的直方图，再映射回 bbox
+  // "global" -> 全图所有对象合并成一个全局直方图，再广播回整图
+  "hist_mode": "object",
+
+  // 多个对象区域发生重叠时，特征如何融合：
+  // "mean" / "sum" / "max"
+  "merge_mode": "mean",
+
+  // 额外追加的统计通道，可选：
+  // "mean", "iqr", "p10", "p90", "foreground_ratio"
+  // 当前这一组会提供 4 个附加通道。
+  "include_stats": [
+    "mean",
+    "iqr",
+    "p10",
+    "p90"
+  ],
+
+  // 保存格式：
+  // "npy"  -> 只保存 NumPy 文件
+  // "pt"   -> 只保存 PyTorch 张量
+  // "both" -> 两种都保存
+  "save_format": "npy",
+
+  // 处理哪些数据划分。常见是 train / val，也可以只处理 val。
+  "splits": [
+    "train",
+    "val"
+  ],
+
+  // 只处理哪些子数据集。
+  // null 表示处理 datasets_root 下所有符合结构的子数据集。
+  // 例如：["baibei", "baiha"]
+  "dataset_names": null,
+
+  // 是否跳过空标签或没有有效 bbox 的图片。
+  "skip_empty_labels": false
+}

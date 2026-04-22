@@ -1,0 +1,204 @@
+{
+  "datasets_root": "datasets",
+  "output_root": "shell_hist_yolo_output",
+  "config": {
+    "background_threshold": 250,
+    "foreground_mode": "smart",
+    "hist_bins": 16,
+    "hist_mode": "object",
+    "merge_mode": "mean",
+    "include_stats": [
+      "mean",
+      "iqr",
+      "p10",
+      "p90"
+    ],
+    "save_format": "npy",
+    "skip_empty_labels": false
+  },
+  "datasets": {
+    "baibei": {
+      "dataset_dir": "datasets\\baibei",
+      "output_dir": "shell_hist_yolo_output\\baibei",
+      "channels": 21,
+      "tensor_format": "npy",
+      "splits": {
+        "train": {
+          "processed_images": 84,
+          "image_dir": "datasets\\baibei\\images\\train",
+          "label_dir": "datasets\\baibei\\labels\\train",
+          "tensor_dir": "shell_hist_yolo_output\\baibei\\images\\train",
+          "sidecar_dir": "shell_hist_yolo_output\\baibei\\sidecar\\train",
+          "output_label_dir": "shell_hist_yolo_output\\baibei\\labels\\train",
+          "class_ids": [
+            0,
+            1,
+            2,
+            3
+          ]
+        },
+        "val": {
+          "processed_images": 12,
+          "image_dir": "datasets\\baibei\\images\\val",
+          "label_dir": "datasets\\baibei\\labels\\val",
+          "tensor_dir": "shell_hist_yolo_output\\baibei\\images\\val",
+          "sidecar_dir": "shell_hist_yolo_output\\baibei\\sidecar\\val",
+          "output_label_dir": "shell_hist_yolo_output\\baibei\\labels\\val",
+          "class_ids": [
+            0,
+            1,
+            2,
+            3
+          ]
+        }
+      },
+      "processed_images": 96,
+      "class_ids": [
+        0,
+        1,
+        2,
+        3
+      ]
+    },
+    "baiha": {
+      "dataset_dir": "datasets\\baiha",
+      "output_dir": "shell_hist_yolo_output\\baiha",
+      "channels": 21,
+      "tensor_format": "npy",
+      "splits": {
+        "train": {
+          "processed_images": 0,
+          "image_dir": "datasets\\baiha\\images\\train",
+          "label_dir": "datasets\\baiha\\labels\\train",
+          "tensor_dir": "shell_hist_yolo_output\\baiha\\images\\train",
+          "sidecar_dir": "shell_hist_yolo_output\\baiha\\sidecar\\train",
+          "output_label_dir": "shell_hist_yolo_output\\baiha\\labels\\train",
+          "class_ids": []
+        },
+        "val": {
+          "processed_images": 0,
+          "image_dir": "datasets\\baiha\\images\\val",
+          "label_dir": "datasets\\baiha\\labels\\val",
+          "tensor_dir": "shell_hist_yolo_output\\baiha\\images\\val",
+          "sidecar_dir": "shell_hist_yolo_output\\baiha\\sidecar\\val",
+          "output_label_dir": "shell_hist_yolo_output\\baiha\\labels\\val",
+          "class_ids": []
+        }
+      },
+      "processed_images": 0,
+      "class_ids": []
+    },
+    "haizhi": {
+      "dataset_dir": "datasets\\haizhi",
+      "output_dir": "shell_hist_yolo_output\\haizhi",
+      "channels": 21,
+      "tensor_format": "npy",
+      "splits": {
+        "train": {
+          "processed_images": 0,
+          "image_dir": "datasets\\haizhi\\images\\train",
+          "label_dir": "datasets\\haizhi\\labels\\train",
+          "tensor_dir": "shell_hist_yolo_output\\haizhi\\images\\train",
+          "sidecar_dir": "shell_hist_yolo_output\\haizhi\\sidecar\\train",
+          "output_label_dir": "shell_hist_yolo_output\\haizhi\\labels\\train",
+          "class_ids": []
+        },
+        "val": {
+          "processed_images": 0,
+          "image_dir": "datasets\\haizhi\\images\\val",
+          "label_dir": "datasets\\haizhi\\labels\\val",
+          "tensor_dir": "shell_hist_yolo_output\\haizhi\\images\\val",
+          "sidecar_dir": "shell_hist_yolo_output\\haizhi\\sidecar\\val",
+          "output_label_dir": "shell_hist_yolo_output\\haizhi\\labels\\val",
+          "class_ids": []
+        }
+      },
+      "processed_images": 0,
+      "class_ids": []
+    },
+    "huaha": {
+      "dataset_dir": "datasets\\huaha",
+      "output_dir": "shell_hist_yolo_output\\huaha",
+      "channels": 21,
+      "tensor_format": "npy",
+      "splits": {
+        "train": {
+          "processed_images": 0,
+          "image_dir": "datasets\\huaha\\images\\train",
+          "label_dir": "datasets\\huaha\\labels\\train",
+          "tensor_dir": "shell_hist_yolo_output\\huaha\\images\\train",
+          "sidecar_dir": "shell_hist_yolo_output\\huaha\\sidecar\\train",
+          "output_label_dir": "shell_hist_yolo_output\\huaha\\labels\\train",
+          "class_ids": []
+        },
+        "val": {
+          "processed_images": 0,
+          "image_dir": "datasets\\huaha\\images\\val",
+          "label_dir": "datasets\\huaha\\labels\\val",
+          "tensor_dir": "shell_hist_yolo_output\\huaha\\images\\val",
+          "sidecar_dir": "shell_hist_yolo_output\\huaha\\sidecar\\val",
+          "output_label_dir": "shell_hist_yolo_output\\huaha\\labels\\val",
+          "class_ids": []
+        }
+      },
+      "processed_images": 0,
+      "class_ids": []
+    },
+    "wenha": {
+      "dataset_dir": "datasets\\wenha",
+      "output_dir": "shell_hist_yolo_output\\wenha",
+      "channels": 21,
+      "tensor_format": "npy",
+      "splits": {
+        "train": {
+          "processed_images": 0,
+          "image_dir": "datasets\\wenha\\images\\train",
+          "label_dir": "datasets\\wenha\\labels\\train",
+          "tensor_dir": "shell_hist_yolo_output\\wenha\\images\\train",
+          "sidecar_dir": "shell_hist_yolo_output\\wenha\\sidecar\\train",
+          "output_label_dir": "shell_hist_yolo_output\\wenha\\labels\\train",
+          "class_ids": []
+        },
+        "val": {
+          "processed_images": 0,
+          "image_dir": "datasets\\wenha\\images\\val",
+          "label_dir": "datasets\\wenha\\labels\\val",
+          "tensor_dir": "shell_hist_yolo_output\\wenha\\images\\val",
+          "sidecar_dir": "shell_hist_yolo_output\\wenha\\sidecar\\val",
+          "output_label_dir": "shell_hist_yolo_output\\wenha\\labels\\val",
+          "class_ids": []
+        }
+      },
+      "processed_images": 0,
+      "class_ids": []
+    },
+    "xueha": {
+      "dataset_dir": "datasets\\xueha",
+      "output_dir": "shell_hist_yolo_output\\xueha",
+      "channels": 21,
+      "tensor_format": "npy",
+      "splits": {
+        "train": {
+          "processed_images": 0,
+          "image_dir": "datasets\\xueha\\images\\train",
+          "label_dir": "datasets\\xueha\\labels\\train",
+          "tensor_dir": "shell_hist_yolo_output\\xueha\\images\\train",
+          "sidecar_dir": "shell_hist_yolo_output\\xueha\\sidecar\\train",
+          "output_label_dir": "shell_hist_yolo_output\\xueha\\labels\\train",
+          "class_ids": []
+        },
+        "val": {
+          "processed_images": 0,
+          "image_dir": "datasets\\xueha\\images\\val",
+          "label_dir": "datasets\\xueha\\labels\\val",
+          "tensor_dir": "shell_hist_yolo_output\\xueha\\images\\val",
+          "sidecar_dir": "shell_hist_yolo_output\\xueha\\sidecar\\val",
+          "output_label_dir": "shell_hist_yolo_output\\xueha\\labels\\val",
+          "class_ids": []
+        }
+      },
+      "processed_images": 0,
+      "class_ids": []
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "dataset_name": "xueha",
+  "dataset_path": "C:\\Users\\liuyang\\PycharmProjects\\PythonProject\\shell_hist_yolo_output\\xueha",
+  "channels": 21,
+  "save_format": "npy",
+  "hist_bins": 16,
+  "hist_mode": "object",
+  "merge_mode": "mean",
+  "foreground_mode": "smart",
+  "background_threshold": 250,
+  "include_stats": [
+    "mean",
+    "iqr",
+    "p10",
+    "p90"
+  ],
+  "splits": [],
+  "class_ids": [],
+  "names": {}
+}
