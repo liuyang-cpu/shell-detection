@@ -95,7 +95,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--epochs", type=int, default=100, help="Number of training epochs")
     parser.add_argument("--imgsz", type=int, default=640, help="Training image size")
     parser.add_argument("--batch", type=int, default=8, help="Batch size")
-    parser.add_argument("--device", type=str, default="", help="Training device, e.g. 0, 0,1 or cpu")
+    parser.add_argument("--device", type=str, default="cuda", help="Training device, e.g. cuda, 0, 0,1 or cpu")
     parser.add_argument("--workers", type=int, default=4, help="Dataloader workers")
     parser.add_argument("--project", type=Path, default=Path("runs/shell_hist_yolo"), help="Output project folder")
     parser.add_argument("--name", type=str, default="yolo11n_npy", help="Run name")
@@ -166,7 +166,12 @@ def main() -> None:
     print(f"Model        : {model_path}")
     print(f"Channels     : {channels}")
     print(f"Classes      : {nc}")
+    train_device = args.device.strip() if isinstance(args.device, str) else str(args.device)
+    if not train_device:
+        train_device = "cuda"
+
     print(f"Project      : {project_path}")
+    print(f"Device       : {train_device}")
 
     # 从 yolo11n.pt 加载时，会尽量复用形状匹配的预训练权重。
     # 对于 NPY 多通道输入，Ultralytics 会按 dataset.yaml 里的 channels 重建首层卷积。
@@ -176,7 +181,7 @@ def main() -> None:
         epochs=args.epochs,
         imgsz=args.imgsz,
         batch=args.batch,
-        device=args.device,
+        device=train_device,
         workers=args.workers,
         project=str(project_path),
         name=args.name,
